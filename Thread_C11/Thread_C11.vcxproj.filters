@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="atm">
+      <UniqueIdentifier>{1260f6f6-8a7e-47c2-b995-e5c40f73b8c4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Thread_C11.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\atm\atm.cpp">
+      <Filter>atm</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\head\day1.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\t_include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day2.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day5_Single.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day6_condition_variable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day7_future_promise_async.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day7_ThreadPool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day8_csp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\atm.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\bank_matchine.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\dispatcher.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\interface_matchine.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\message.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\atm\withdraw_msg.h">
+      <Filter>atm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day11_AcquireRelease.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day12_CirularQueLK.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day13_fence.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day14_ThreadSafeQue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day14_ThreadSafeStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
