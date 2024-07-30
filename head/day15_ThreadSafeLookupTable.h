@@ -2,86 +2,167 @@
 
 #pragma once
 
-namespace{
-std::atomic<bool> x, y;
-std::atomic<int> z;
+// 1. 并发读不会阻塞其他线程, 并发写会阻塞
+// 2. 对链表加锁不精细, 因为使用的std的list, 操作都是用同一个锁
+template<typename Key, typename Value, typename Hash = std::hash<Key>>
+class threadsafe_lookup_table
+{
+private:
+    class bucket_type
+    {
+        // threadsafe_lookup_table 要访问 bucket_type 的私有
+        friend class threadsafe_lookup_table;
+        using bucket_value = std::pair<Key, Value>;
+        using bucket_data = std::list<bucket_value>;
+        using bucket_iterator = typename bucket_data::iterator;
 
-void write_x()
+        bucket_data data;
+        mutable std::shared_mutex mutex;
+        bucket_iterator find_entry_for(const Key& key)
+        {
+            return std::find_if(data.begin(), data.end(), [&](const bucket_value& item) {
+                return item.first == key;
+                });
+        }
+
+    public:
+        Value value_for(const Key& key, Value const& default_value)
+        {
+            std::shared_lock<std::shared_mutex> lk(mutex);
+            auto it = find_entry_for(key);
+            return it == data.end() ? default_value : it->second;
+        }
+
+        void add_or_update_mapping(const Key& key, const Value& value)
+        {
+            std::unique_lock<std::shared_mutex> lk(mutex);
+            auto it = find_entry_for(key);
+            if (it == data.end())
+            {
+                data.push_back(bucket_value(key, value));
+            }
+        }
+
+        void remove_mapping(const Key& key)
+        {
+            std::unique_lock<std::shared_mutex> lk(mutex);
+            auto it = find_entry_for(key);
+            if (it != data.end())
+            {
+                data.erase(it);
+            }
+        }
+    };
+
+private:
+    std::vector<std::unique_ptr<bucket_type>> buckets;
+    Hash hasher;
+
+    bucket_type& get_bucket(const Key& key) const
+    {
+        std::size_t const bucket_index = hasher(key) % buckets.size();
+        return *buckets[bucket_index];
+    }
+
+public:
+    threadsafe_lookup_table(unsigned num_buckets = 19, const Hash& hasher_ = Hash())
+        : buckets(num_buckets), hasher(hasher_)
+    {
+        for (unsigned i = 0; i < num_buckets; ++i)
+        {
+            buckets[i].reset(new bucket_type);
+        }
+    }
+
+    threadsafe_lookup_table(const threadsafe_lookup_table&) = delete;
+    threadsafe_lookup_table& operator=(const threadsafe_lookup_table&) = delete;
+
+    Value value_for(const Key& key, Value const& default_value = Value())
+    {
+        return get_bucket(key).value_for(key, default_value);
+    }
+
+    void add_or_update_mapping(const Key& key, const Value& default_value)
+    {
+        return get_bucket(key).add_or_update_mapping(key, default_value);
+    }
+
+    void remove_mapping(const Key& key)
+    {
+        return get_bucket(key).remove_mapping(key);
+    }
+
+    std::map<Key, Value> get_map()
+    {
+        std::vector<std::unique_lock<std::shared_mutex>> lks;
+        for (unsigned i = 0; i < buckets.size(); ++i)
+        {
+            lks.push_back(std::unique_lock<std::shared_mutex>(buckets[i]->mutex));
+        }
+
+        std::map<Key, Value> res;
+        for (unsigned i = 0; i < buckets.size(); ++i)
+        {
+            auto it = buckets[i]->data.begin();
+            for (; it != buckets[i]->data.end(); ++it)
+            {
+                res.insert(*it);
+            }
+        }
+
+        return res;
+    }
+};
+
+
+void TestThreadSafeHash()
 {
-    x.store(true, std::memory_order_release); //1
-}
-void write_y()
-{
-    y.store(true, std::memory_order_release); //2
-}
-void read_x_then_y()
-{
-    while (!x.load(std::memory_order_acquire));
-    if (y.load(std::memory_order_acquire))   //3
-        ++z;
-}
-void read_y_then_x()
-{
-    while (!y.load(std::memory_order_acquire));
-    if (x.load(std::memory_order_acquire))   //4
-        ++z;
+    std::set<int> removeSet;
+    threadsafe_lookup_table<int, std::shared_ptr<MyClass>> table;
+    std::thread t1([&]() {
+        for (int i =0; i < 100; ++i)
+        {
+            auto ptr = std::make_shared<MyClass>(i);
+            table.add_or_update_mapping(i, ptr);
+        }
+        });
+    std::thread t2([&]() {
+        for (int i =0; i < 100; ++i)
+        {
+            auto find_res = table.value_for(i, nullptr);
+            if (find_res)
+            {
+                table.remove_mapping(i);
+                removeSet.insert(i);
+                ++i;
+            }
+            std::this_thread::sleep_for(std::chrono::microseconds(10));
+        }
+        });
+    std::thread t3([&]() {
+        for (int i = 100; i < 200; ++i)
+        {
+            auto ptr = std::make_shared<MyClass>(i);
+            table.add_or_update_mapping(i, ptr);
+        }
+        });
+
+    t1.join();
+    t2.join();
+    t3.join();
+
+    for (auto i:removeSet)
+    {
+        std::cout << "remove data " << i << std::endl;
+    }
+    auto map = table.get_map();
+    for (auto& i : map)
+    {
+        std::cout << "copy data " << *(i.second) << std::endl;
+    }
 }
 
-void TestAR()
+void day15()
 {
-    x = false;
-    y = false;
-    z = 0;
-    std::thread a(write_x);
-    std::thread b(write_y);
-    std::thread c(read_x_then_y);
-    std::thread d(read_y_then_x);
-    a.join();
-    b.join();
-    c.join();
-    d.join();
-    assert(z.load() != 0); //5 有可能触发, 因为宽松内存序 不保证修改各个可见
-    std::cout << "z value is " << z.load() << std::endl;
-}
-
-
-// 使用栅栏
-//线程a运行write_x_then_y_fence，线程b运行read_y_then_x_fence.
-//当线程b执行到5处时说明4已经结束，此时线程a看到y为true，那么线程a必然已经执行完3.
-//尽管4和3我们采用的是std::memory_order_relaxed顺序，但是通过逻辑关系保证了3的结果同步给4，进而"3 happens-before 4"
-//因为我们采用了栅栏std::atomic_fence所以，5处能保证6不会先于5写入内存，(memory_order_acquire保证其后的指令不会先于其写入内存)
-//2处能保证1处的指令先于2写入内存，进而"1 happens-before 6", 1的结果会同步给 6
-//所以"atomic_thread_fence"其实和"release-acquire"相似，都是保证memory_order_release之前的指令不会排到其后，memory_order_acquire之后的指令不会排到其之前。
-
-void write_x_then_y_fence()
-{
-    x.store(true, std::memory_order_relaxed);  //1
-    std::atomic_thread_fence(std::memory_order_release);  //2
-    y.store(true, std::memory_order_relaxed);  //3
-}
-
-void read_y_then_x_fence()
-{
-    while (!y.load(std::memory_order_relaxed));  //4
-    std::atomic_thread_fence(std::memory_order_acquire); //5
-    if (x.load(std::memory_order_relaxed))  //6
-        ++z;
-}
-
-void TestFence()
-{
-    x = false;
-    y = false;
-    z = 0;
-    std::thread a(write_x_then_y_fence);
-    std::thread b(read_y_then_x_fence);
-    a.join();
-    b.join();
-    assert(z.load() != 0);   //7
-}
-}
-void day13()
-{
-    TestAR();
-    TestFence();
+    TestThreadSafeHash();
 }

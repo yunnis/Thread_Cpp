@@ -13,6 +13,7 @@
 #include "day12_CirularQueLK.h"
 #include "day13_fence.h"
 #include "day14_ThreadSafeStack.h"
+#include "day15_ThreadSafeLookupTable.h"
 
 #include "atm.h"
 
@@ -53,7 +54,8 @@ int main()
     //day11();
     //day12();
     //day13();
-    day14_ThreadSafeStack();
+    //day14_ThreadSafeStack();
+    day15();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

@@ -89,5 +89,8 @@
     <ClInclude Include="..\head\day14_ThreadSafeStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\head\day15_ThreadSafeLookupTable.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
