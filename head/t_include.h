@@ -27,6 +27,7 @@ public :
         os << mc._data;
         return os;
     }
+    int GetData() const { return _data; }
 private:
     int _data;
 };

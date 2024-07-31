@@ -92,5 +92,11 @@
     <ClInclude Include="..\head\day15_ThreadSafeLookupTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\head\day16_ThreadSafeList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day16_ThreadSafeForwardList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,6 +14,8 @@
 #include "day13_fence.h"
 #include "day14_ThreadSafeStack.h"
 #include "day15_ThreadSafeLookupTable.h"
+#include "day16_ThreadSafeForwardList.h"
+#include "day16_ThreadSafeList.h"
 
 #include "atm.h"
 
@@ -55,7 +57,9 @@ int main()
     //day12();
     //day13();
     //day14_ThreadSafeStack();
-    day15();
+    //day15();
+    //day16_forwardlist();
+    day16_list();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
