@@ -16,6 +16,10 @@
 #include "day15_ThreadSafeLookupTable.h"
 #include "day16_ThreadSafeForwardList.h"
 #include "day16_ThreadSafeList.h"
+#include "day17_LockFreeStack.h"
+#include "day17_HazardPointStack.h"
+#include "day17_SingleRefStack.h"
+#include "day17_RefCountStack.h"
 
 #include "atm.h"
 
@@ -59,7 +63,11 @@ int main()
     //day14_ThreadSafeStack();
     //day15();
     //day16_forwardlist();
-    day16_list();
+    //day16_list();
+    //day17_LockFreeStack();
+    //day17_HazardPointStack();
+    //day17_SingleRefStack();
+    day17_RefCountStack();
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

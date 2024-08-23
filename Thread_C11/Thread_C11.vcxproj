@@ -157,6 +157,9 @@
     <ClInclude Include="..\head\day15_ThreadSafeLookupTable.h" />
     <ClInclude Include="..\head\day16_ThreadSafeForwardList.h" />
     <ClInclude Include="..\head\day16_ThreadSafeList.h" />
+    <ClInclude Include="..\head\day17_LockFreeStack.h" />
+    <ClInclude Include="..\head\day17_RefCountStack.h" />
+    <ClInclude Include="..\head\day17_SingleRefStack.h" />
     <ClInclude Include="..\head\day2.h" />
     <ClInclude Include="..\head\day3.h" />
     <ClInclude Include="..\head\day4.h" />

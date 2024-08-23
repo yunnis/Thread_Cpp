@@ -98,5 +98,14 @@
     <ClInclude Include="..\head\day16_ThreadSafeForwardList.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\head\day17_LockFreeStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day17_SingleRefStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\head\day17_RefCountStack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
